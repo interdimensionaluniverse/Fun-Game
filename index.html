@@ -5,54 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fun Game</title>
 <style>
-body { background-color:lightgreen ;
-color: aqua;
-font-size: 16px;
-text-align: center;
-
-
-}
-
-button {
-    background-color: blue; /* Button background color */
-    font-size: 16px; /* Button font size */
-    color: aqua; /* Button text color */
-    margin: 40px; /* Margin around buttons */
-    padding: 10px 15px; /* Padding inside buttons */
-    border: none; /* No border */
-    border-radius: 10px; /* Rounded corners for buttons */
-    cursor: pointer; /* Change cursor to pointer when hovering over buttons */
-    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for background color and transform */
-}
-
-button:hover {
-    background-color: #4a8d4e; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarge the button on hover */
-}
-
-button:active {
-    transform: scale(0.95); /* Slightly shrink when clicked */
-}
-
-h1, h2, p { background-color: darkblue;
-  margin: 30px; /* Margin around buttons */
-    padding: 5px 5px; /* Padding inside buttons */
-    border: none; /* No border */
-    border-radius: 100px; /* Rounded corners for buttons */
-
-}
-
+    body { background-color: lightgreen; color: aqua; font-size: 16px; text-align: center; }
+    button {
+        background-color: blue; font-size: 16px; color: aqua; margin: 40px;
+        padding: 10px 15px; border: none; border-radius: 10px; cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    button:hover { background-color: #4a8d4e; transform: scale(1.05); }
+    button:active { transform: scale(0.95); }
+    h1, h2, p {
+        background-color: darkblue; margin: 30px; padding: 5px;
+        border: none; border-radius: 10px;
+    }
 </style>
 </head>
 <body>
     <h1>Fun Game</h1>
-    <p>Click the button below to begin the fun game</p>
-    <button id="openTabsButton">Start Game</button>
+    <p>Before starting the game, please read and agree to the terms below:</p>
+
+    <!-- User Agreement -->
+    <div id="userAgreement" style="margin: 20px; background-color: blue; color: gold; padding: 15px; border-radius: 10px;">
+        <h2>User Agreement</h2>
+        <p>This game is provided as-is, and the creator is not liable for any consequences or issues that arise from its use. 
+           By agreeing to these terms, you acknowledge and accept full responsibility for your actions while using this game.</p>
+        <input type="checkbox" id="agreeCheckbox"> I agree to the terms and conditions
+        <button id="agreeButton" disabled>Confirm Agreement</button>
+    </div>
+
+    <!-- Start Game Button (hidden initially) -->
+    <div id="gameContent" style="display: none;">
+        <p>Click the button below to begin the fun game:</p>
+        <button id="openTabsButton">Start Game</button>
+    </div>
 
     <script>
+        // Enable the "Confirm Agreement" button only if checkbox is checked
+        const agreeCheckbox = document.getElementById('agreeCheckbox');
+        const agreeButton = document.getElementById('agreeButton');
+        const gameContent = document.getElementById('gameContent');
+        const userAgreement = document.getElementById('userAgreement');
+
+        agreeCheckbox.addEventListener('change', function() {
+            agreeButton.disabled = !this.checked;
+        });
+
+        // Show game content if agreement is confirmed
+        agreeButton.addEventListener('click', function() {
+            userAgreement.style.display = 'none'; // Hide agreement
+            gameContent.style.display = 'block'; // Show game content
+        });
+
         // Array of random search terms
         const searchTerms = [
-            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+           "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
 "aa", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "aj", "ak", "al", "am", "an", "ao", "ap", "aq", "ar", "as", "at", "au", "av", "aw", "ax", "ay", "az",
 "ba", "bb", "bc", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bk", "bl", "bm", "bn", "bo", "bp", "bq", "br", "bs", "bt", "bu", "bv", "bw", "bx", "by", "bz",
 "ca", "cb", "cc", "cd", "ce", "cf", "cg", "ch", "ci", "cj", "ck", "cl", "cm", "cn", "co", "cp", "cq", "cr", "cs", "ct", "cu", "cv", "cw", "cx", "cy", "cz",
@@ -79,27 +84,19 @@ h1, h2, p { background-color: darkblue;
 "xa", "xb", "xc", "xd", "xe", "xf", "xg", "xh", "xi", "xj", "xk", "xl", "xm", "xn", "xo", "xp", "xq", "xr", "xs", "xt", "xu", "xv", "xw", "xx", "xy", "xz",
 "ya", "yb", "yc", "yd", "ye", "yf", "yg", "yh", "yi", "yj", "yk", "yl", "ym", "yn", "yo", "yp", "yq", "yr", "ys", "yt", "yu", "yv", "yw", "yx", "yy", "yz",
 "za", "zb", "zc", "zd", "ze", "zf", "zg", "zh", "zi", "zj", "zk", "zl", "zm", "zn", "zo", "zp", "zq", "zr", "zs", "zt", "zu", "zv", "zw", "zx", "zy", "zz",
-
         ];
 
-    
-        // Counter to switch between search engines
+        // Counter to alternate search engines
         let counter = 0;
 
-        // Function to get a random search term from the array
-        function getRandomSearchTerm() {
-            const randomIndex = Math.floor(Math.random() * searchTerms.length);
-            return searchTerms[randomIndex];
-        }
-
-        // Function to generate 100 search URLs
+        // Function to generate search URLs
         function generateSearchUrls() {
             const urls = [];
             for (let i = 0; i < 1000; i++) {
-                const query = getRandomSearchTerm();
-                
-                // Select search engine based on counter value (0: Google, 1: Bing, 2: DuckDuckGo, 3: Yahoo)
+                const query = searchTerms[Math.floor(Math.random() * searchTerms.length)];
                 let searchUrl;
+                
+                // Alternate search engines: Google, Bing, DuckDuckGo, Yahoo
                 switch (counter % 4) {
                     case 0:
                         searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
@@ -125,21 +122,9 @@ h1, h2, p { background-color: darkblue;
         function openTabs() {
             const urls = generateSearchUrls();
             urls.forEach(url => window.open(url, '_blank'));
-            
-            // Ask if the user wants to continue opening sets of 100 tabs every few seconds
-            setTimeout(() => {
-                const continueOpening = confirm("Do you want to continue opening 100 new tabs every few seconds?");
-                if (continueOpening) {
-                    // If user confirms, keep opening more sets of 100 tabs
-                    setInterval(() => {
-                        const newUrls = generateSearchUrls();
-                        newUrls.forEach(url => window.open(url, '_blank'));
-                    }, 1); // Opens new set every 3 seconds
-                }
-            }, 1); // Delay prompt for one second after opening tabs
         }
 
-        // Event listener for the button
+        // Event listener for "Start Game" button
         document.getElementById('openTabsButton').addEventListener('click', openTabs);
     </script>
 </body>
